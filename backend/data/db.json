@@ -1,0 +1,65 @@
+{
+  "clients": [
+    {"id":"c1","name":"TechNova Solutions","industry":"IT / Software","contact":"Neha Verma","email":"neha.verma@technova.io","openJobs":4,"status":"active"},
+    {"id":"c2","name":"Bluepeak Retail","industry":"Retail","contact":"Sanjay Oberoi","email":"sanjay@bluepeak.in","openJobs":1,"status":"active"},
+    {"id":"c3","name":"Orion Health","industry":"Healthcare","contact":"Dr. Meera Iyer","email":"meera.iyer@orionhealth.com","openJobs":2,"status":"active"},
+    {"id":"c4","name":"Meridian Manufacturing","industry":"Manufacturing","contact":"Rajiv Kapoor","email":"rkapoor@meridianmfg.com","openJobs":1,"status":"inactive"}
+  ],
+  "jobs": [
+    {"id":"j1","title":"Senior React Developer","client":"TechNova Solutions","location":"Bengaluru","openings":2,"status":"open"},
+    {"id":"j2","title":"DevOps Engineer","client":"TechNova Solutions","location":"Remote","openings":1,"status":"open"},
+    {"id":"j3","title":"Sales Manager","client":"Bluepeak Retail","location":"Mumbai","openings":1,"status":"open"},
+    {"id":"j4","title":"UI/UX Designer","client":"Orion Health","location":"Bengaluru","openings":1,"status":"closed"}
+  ],
+  "candidates": [
+    {"id":"cd1","name":"Arjun Mehta","location":"Bengaluru","email":"arjun.mehta@mail.com","phone":"98450 11221","position":"Senior React Developer","stage":"Interview","source":"LinkedIn","experience":"5 yrs","skills":["React","Node.js","AWS"],"currentCTC":16,"expectedCTC":22},
+    {"id":"cd2","name":"Sneha Kulkarni","location":"Pune","email":"sneha.kulkarni@mail.com","phone":"90210 44551","position":"Backend Developer","stage":"Submitted","source":"Naukri","experience":"4 yrs","skills":["Python","Django","SQL"],"currentCTC":14,"expectedCTC":19},
+    {"id":"cd3","name":"Rahul Verma","location":"Bengaluru","email":"rahul.verma@mail.com","phone":"97401 22110","position":"UI/UX Designer","stage":"Contacted","source":"Referral","experience":"3 yrs","skills":["React","UI/UX Design"],"currentCTC":10,"expectedCTC":14},
+    {"id":"cd4","name":"Ananya Das","location":"Mumbai","email":"ananya.das@mail.com","phone":"96543 00000","position":"Sales Manager","stage":"Offered","source":"Naukri","experience":"6 yrs","skills":["Sales","Salesforce"],"currentCTC":13,"expectedCTC":17},
+    {"id":"cd5","name":"Vikram Singh","location":"Remote","email":"vikram.singh@mail.com","phone":"90210 44551","position":"DevOps Engineer","stage":"Submitted","source":"LinkedIn","experience":"7 yrs","skills":["AWS","Kubernetes","DevOps"],"currentCTC":23,"expectedCTC":29},
+    {"id":"cd6","name":"Pooja Reddy","location":"Hyderabad","email":"pooja.reddy@mail.com","phone":"90045 12233","position":"HR Manager","stage":"Sourced","source":"Job Portal","experience":"5 yrs","skills":["HR Operations","Recruitment"],"currentCTC":12,"expectedCTC":16},
+    {"id":"cd7","name":"Karthik Iyer","location":"Pune","email":"karthik.iyer@mail.com","phone":"90045 98765","position":"Product Manager","stage":"Selected","source":"Referral","experience":"8 yrs","skills":["Product Management","Data Analysis"],"currentCTC":25,"expectedCTC":31},
+    {"id":"cd8","name":"Divya Nair","location":"Mumbai","email":"divya.nair@mail.com","phone":"88990 12345","position":"Digital Marketing Lead","stage":"Sourced","source":"Naukri","experience":"4 yrs","skills":["Digital Marketing","Content Writing"],"currentCTC":10,"expectedCTC":13},
+    {"id":"cd9","name":"Meghana Pillai","location":"Mumbai","email":"meghana.p@mail.com","phone":"90045 12233","position":"Sales Manager","stage":"Contacted","source":"Referral","experience":"5 yrs","skills":["Sales","Marketing"],"currentCTC":9,"expectedCTC":11}
+  ],
+  "interviews": [
+    {"id":"iv1","candidate":"Arjun Mehta","job":"Senior React Developer","date":"2026-07-22","time":"11:00 AM","interviewer":"Riya Sharma","status":"Scheduled"},
+    {"id":"iv2","candidate":"Sneha Kulkarni","job":"Backend Developer","date":"2026-07-23","time":"3:00 PM","interviewer":"Amit Kumar","status":"Scheduled"},
+    {"id":"iv3","candidate":"Karthik Iyer","job":"Product Manager","date":"2026-07-18","time":"1:00 PM","interviewer":"Priya Nair","status":"Completed"}
+  ],
+  "offers": [
+    {"id":"of1","candidate":"Ananya Das","job":"Sales Manager","ctc":17,"status":"Pending","date":"2026-07-15"},
+    {"id":"of2","candidate":"Karthik Iyer","job":"Product Manager","ctc":31,"status":"Accepted","date":"2026-07-10"}
+  ],
+  "joinings": [
+    {"id":"jn1","candidate":"Karthik Iyer","job":"Product Manager","joiningDate":"2026-08-01","status":"Confirmed"}
+  ],
+  "calls": [
+    {"id":"cl1","contact":"Arjun Mehta", "phone":"98450 11221" ,"email":"arjun.mehta@mail.com","location":"Bengaluru","position":"Senior React Developer","salary":"22 LPA expected","status":"Interested","remarks":"Confirmed for interview round 2.","source":"LinkedIn","date":"2026-07-12"},
+    {"id":"cl2","contact":"Vikram Singh", "phone":"98450 11221" , "email":"vikram.singh@mail.com","location":"Remote","position":"DevOps Engineer","salary":"29 LPA expected","status":"Interested","remarks":"Good DevOps fit, sharing JD.","source":"LinkedIn","date":"2026-07-12"},
+    {"id":"cl3","contact":"Meghana Pillai","phone":"98450 11221" , "email":"meghana.p@mail.com","location":"Mumbai","position":"Sales Manager","salary":"11 LPA expected","status":"Not pick","remarks":"Called twice, no response.","source":"Referral","date":"2026-07-12"},
+    {"id":"cl4","contact":"Rahul Verma", "phone":"98450 11221" , "email":"rahul.verma@mail.com","location":"Bengaluru","position":"UI/UX Designer","salary":"14 LPA expected","status":"Notice Issue","remarks":"Notice period discussion pending.","source":"Referral","date":"2026-07-11"},
+    {"id":"cl5","contact":"Divya Nair", "phone":"98450 11221" , "email":"divya.nair@mail.com","location":"Mumbai","position":"Digital Marketing Lead","salary":"13 LPA expected","status":"Location Issue","remarks":"Wants only Mumbai-based hybrid role.","source":"Naukri","date":"2026-07-11"},
+    {"id":"cl6","contact":"Ananya Das", "phone":"98450 11221" , "email":"ananya.das@mail.com","location":"Mumbai","position":"Sales Manager","salary":"17 LPA expected","status":"Interested","remarks":"Offer under discussion.","source":"Naukri","date":"2026-07-10"}
+  ],
+  "invoices": [
+    {"id":"i1","invoice":"INV001","client":"Orion Health","amount":240000,"invoiced":"2026-06-25","due":"2026-07-10","status":"paid"},
+    {"id":"i2","invoice":"INV002","client":"Meridian Manufacturing","amount":380000,"invoiced":"2026-06-05","due":"2026-06-20","status":"paid"},
+    {"id":"i3","invoice":"INV003","client":"TechNova Solutions","amount":520000,"invoiced":"2026-07-08","due":"2026-07-23","status":"pending"},
+    {"id":"i4","invoice":"INV004","client":"Bluepeak Retail","amount":190000,"invoiced":"2026-06-01","due":"2026-06-16","status":"overdue"},
+    {"id":"i5","invoice":"INV005","client":"Orion Health","amount":460000,"invoiced":"2026-07-12","due":"2026-07-27","status":"pending"}
+  ],
+  "leads": [
+    {"id":"l1","company":"Fintara Bank","contact":"Ritu Chawla","stage":"contacted","owner":"Riya Sharma"},
+    {"id":"l2","company":"Greenfield Logistics","contact":"Anil Bhatia","stage":"proposal","owner":"Amit Kumar"},
+    {"id":"l3","company":"Northstar Energy","contact":"Divya Menon","stage":"new","owner":"Priya Nair"},
+    {"id":"l4","company":"Cascade Foods","contact":"Suresh Pillai","stage":"won","owner":"Karan Mehta"},
+    {"id":"l5","company":"Elevate Edtech","contact":"Farah Sheikh","stage":"lost","owner":"Amit Kumar"}
+  ],
+  "team": [
+    {"id":"t1","name":"Karan Mehta","role":"Senior Recruiter","email":"karan.mehta@ananta.com"},
+    {"id":"t2","name":"Riya Sharma","role":"Recruiter","email":"riya.sharma@ananta.com"},
+    {"id":"t3","name":"Amit Kumar","role":"Recruiter","email":"amit.kumar@ananta.com"},
+    {"id":"t4","name":"Priya Nair","role":"Recruiter","email":"priya.nair@ananta.com"}
+  ]
+}
