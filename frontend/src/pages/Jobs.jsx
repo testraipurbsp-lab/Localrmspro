@@ -1,12 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api.js';
 import DocumentManager from '../components/DocumentManager.jsx';
+import BulkImportModal from '../components/BulkImportModal.jsx';
 
 const emptyForm = {
   title: '', client: '', location: '', openings: 1,
   industryType: '', minExperience: '', maxExperience: '',
   minSalary: '', maxSalary: '', requiredSkills: '',
 };
+
+const bulkColumns = [
+  { key: 'title', example: 'Backend Developer' },
+  { key: 'client', example: 'TechNova Solutions' },
+  { key: 'location', example: 'Bengaluru' },
+  { key: 'openings', example: '2' },
+  { key: 'industryType', example: 'IT / Software' },
+  { key: 'minExperience', example: '3' },
+  { key: 'maxExperience', example: '6' },
+  { key: 'minSalary', example: '15' },
+  { key: 'maxSalary', example: '22' },
+  { key: 'requiredSkills', example: 'Node.js;MongoDB' },
+];
 
 const shareLinks = (job) => {
   const text = encodeURIComponent(`We're hiring: ${job.title} at ${job.client} (${job.location}). Apply now!`);
@@ -22,6 +36,7 @@ const shareLinks = (job) => {
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showBulk, setShowBulk] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [docsJob, setDocsJob] = useState(null);
   const [shareJob, setShareJob] = useState(null);
@@ -59,7 +74,10 @@ export default function Jobs() {
           <h1>Jobs</h1>
           <div className="subtitle">{jobs.length} job openings</div>
         </div>
-        <button className="btn" onClick={() => setShowModal(true)}>+ Add job</button>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button className="btn secondary" onClick={() => setShowBulk(true)}>Bulk import</button>
+          <button className="btn" onClick={() => setShowModal(true)}>+ Add job</button>
+        </div>
       </div>
       <div className="panel">
         <table>
@@ -135,6 +153,15 @@ export default function Jobs() {
             </div>
           </div>
         </div>
+      )}
+
+      {showBulk && (
+        <BulkImportModal
+          entityType="jobs"
+          columns={bulkColumns}
+          onClose={() => setShowBulk(false)}
+          onImported={() => load()}
+        />
       )}
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api.js';
+import BulkImportModal from '../components/BulkImportModal.jsx';
 
 const stages = ['Sourced', 'Contacted', 'Submitted', 'Interview', 'Selected', 'Offered', 'Joined'];
 const emptyForm = {
@@ -9,11 +10,27 @@ const emptyForm = {
   industry: '', education: '', noticePeriod: '',
 };
 const emptyFilters = { skill: '', location: '', industry: '', education: '', noticePeriod: '', minExp: '', maxExp: '', minCTC: '', maxCTC: '' };
+const bulkColumns = [
+  { key: 'name', example: 'Priya Sharma' },
+  { key: 'location', example: 'Bengaluru' },
+  { key: 'email', example: 'priya.sharma@mail.com' },
+  { key: 'phone', example: '9876543210' },
+  { key: 'position', example: 'Backend Developer' },
+  { key: 'experience', example: '4 yrs' },
+  { key: 'currentCTC', example: '12' },
+  { key: 'expectedCTC', example: '16' },
+  { key: 'source', example: 'Naukri' },
+  { key: 'skills', example: 'Python;Django' },
+  { key: 'industry', example: 'IT / Software' },
+  { key: 'education', example: 'B.Tech' },
+  { key: 'noticePeriod', example: '30 days' },
+];
 
 export default function Candidates() {
   const [candidates, setCandidates] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [showBulk, setShowBulk] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [filters, setFilters] = useState(emptyFilters);
   const [parsing, setParsing] = useState(false);
@@ -83,6 +100,7 @@ export default function Candidates() {
           <button className="btn secondary" onClick={() => setShowFilters(s => !s)}>
             Filters{activeFilterCount ? ` (${activeFilterCount})` : ''}
           </button>
+          <button className="btn secondary" onClick={() => setShowBulk(true)}>Bulk import</button>
           <button className="btn" onClick={() => setShowModal(true)}>+ Add candidate</button>
         </div>
       </div>
@@ -180,6 +198,15 @@ export default function Candidates() {
             </div>
           </div>
         </div>
+      )}
+
+      {showBulk && (
+        <BulkImportModal
+          entityType="candidates"
+          columns={bulkColumns}
+          onClose={() => setShowBulk(false)}
+          onImported={() => load()}
+        />
       )}
     </div>
   );

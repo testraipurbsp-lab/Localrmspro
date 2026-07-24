@@ -22,6 +22,14 @@ app.use('/files', express.static(DOCS_DIR));
 function readDB() { return JSON.parse(fs.readFileSync(DB_PATH, 'utf-8')); }
 function writeDB(data) { fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2)); }
 
+function bulkCreate(collectionName, rows, defaults, res) {
+  const db = readDB();
+  const created = rows.map(row => ({ id: uuidv4(), ...defaults, ...row }));
+  db[collectionName].push(...created);
+  writeDB(db);
+  res.json({ count: created.length });
+}
+
 const upload = multer({ dest: UPLOAD_DIR });
 
 const docStorage = multer.diskStorage({
@@ -89,6 +97,9 @@ app.post('/api/clients', (req, res) => {
   writeDB(db);
   res.json(client);
 });
+app.post('/api/clients/bulk', (req, res) => {
+  bulkCreate('clients', req.body.rows || [], { status: 'active', openJobs: 0, documents: [] }, res);
+});
 app.put('/api/clients/:id', (req, res) => {
   const db = readDB();
   const idx = db.clients.findIndex(c => c.id === req.params.id);
@@ -119,6 +130,13 @@ app.post('/api/candidates', (req, res) => {
   db.candidates.push(candidate);
   writeDB(db);
   res.json(candidate);
+});
+app.post('/api/candidates/bulk', (req, res) => {
+  const rows = (req.body.rows || []).map(row => ({
+    ...row,
+    skills: typeof row.skills === 'string' ? row.skills.split(';').map(s => s.trim()).filter(Boolean) : (row.skills || []),
+  }));
+  bulkCreate('candidates', rows, { stage: 'Sourced' }, res);
 });
 app.put('/api/candidates/:id', (req, res) => {
   const db = readDB();
@@ -151,6 +169,13 @@ app.post('/api/jobs', (req, res) => {
   db.jobs.push(job);
   writeDB(db);
   res.json(job);
+});
+app.post('/api/jobs/bulk', (req, res) => {
+  const rows = (req.body.rows || []).map(row => ({
+    ...row,
+    requiredSkills: typeof row.requiredSkills === 'string' ? row.requiredSkills.split(';').map(s => s.trim()).filter(Boolean) : (row.requiredSkills || []),
+  }));
+  bulkCreate('jobs', rows, { status: 'open', documents: [] }, res);
 });
 app.put('/api/jobs/:id', (req, res) => {
   const db = readDB();
@@ -223,6 +248,9 @@ app.post('/api/team', (req, res) => {
   res.json(member);
 });
 
+app.post('/api/team/bulk', (req, res) => {
+  bulkCreate('team', req.body.rows || [], {}, res);
+});
 // ---------- Reports ----------
 app.get('/api/reports', (req, res) => {
   const db = readDB();

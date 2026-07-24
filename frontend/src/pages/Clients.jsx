@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api.js';
 import DocumentManager from '../components/DocumentManager.jsx';
+import BulkImportModal from '../components/BulkImportModal.jsx';
 
 const empty = { name: '', industry: '', contact: '', email: '', openJobs: 0 };
+const bulkColumns = [
+  { key: 'name', example: 'Acme Corp' },
+  { key: 'industry', example: 'IT / Software' },
+  { key: 'contact', example: 'Jane Doe' },
+  { key: 'email', example: 'jane@acme.com' },
+  { key: 'openJobs', example: '2' },
+  { key: 'status', example: 'active' },
+];
 
 export default function Clients() {
   const [clients, setClients] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showBulk, setShowBulk] = useState(false);
   const [form, setForm] = useState(empty);
   const [docsClient, setDocsClient] = useState(null);
 
@@ -31,7 +41,10 @@ export default function Clients() {
           <h1>Clients</h1>
           <div className="subtitle">{clients.length} client companies</div>
         </div>
-        <button className="btn" onClick={() => setShowModal(true)}>+ Add client</button>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button className="btn secondary" onClick={() => setShowBulk(true)}>Bulk import</button>
+          <button className="btn" onClick={() => setShowModal(true)}>+ Add client</button>
+        </div>
       </div>
       <div className="panel">
         <table>
@@ -80,6 +93,15 @@ export default function Clients() {
           title={`Documents — ${docsClient.name}`}
           onChange={(newDocs) => updateClientDocs(docsClient.id, newDocs)}
           onClose={() => setDocsClient(null)}
+        />
+      )}
+
+      {showBulk && (
+        <BulkImportModal
+          entityType="clients"
+          columns={bulkColumns}
+          onClose={() => setShowBulk(false)}
+          onImported={() => load()}
         />
       )}
     </div>

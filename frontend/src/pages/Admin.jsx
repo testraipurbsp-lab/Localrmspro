@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api.js';
+import BulkImportModal from '../components/BulkImportModal.jsx';
 
 const emptyForm = { name: '', role: 'Recruiter', email: '' };
+const bulkColumns = [
+  { key: 'name', example: 'Rohan Gupta' },
+  { key: 'role', example: 'Recruiter' },
+  { key: 'email', example: 'rohan.gupta@ananta.com' },
+];
 
 export default function Admin() {
   const [team, setTeam] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showBulk, setShowBulk] = useState(false);
   const [form, setForm] = useState(emptyForm);
 
   const load = () => api.get('/team').then(setTeam);
@@ -25,7 +32,10 @@ export default function Admin() {
           <h1>Admin</h1>
           <div className="subtitle">Team members and workspace settings</div>
         </div>
-        <button className="btn" onClick={() => setShowModal(true)}>+ Add team member</button>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button className="btn secondary" onClick={() => setShowBulk(true)}>Bulk import</button>
+          <button className="btn" onClick={() => setShowModal(true)}>+ Add team member</button>
+        </div>
       </div>
       <div className="panel">
         <table>
@@ -58,6 +68,15 @@ export default function Admin() {
             </div>
           </div>
         </div>
+      )}
+
+      {showBulk && (
+        <BulkImportModal
+          entityType="team"
+          columns={bulkColumns}
+          onClose={() => setShowBulk(false)}
+          onImported={() => load()}
+        />
       )}
     </div>
   );
