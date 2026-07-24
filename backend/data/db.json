@@ -45,6 +45,32 @@
       "status": "inactive"
     }
   ],
+  "cvInbox": [
+    {
+      "id": "86d60e70-12d8-49a7-8d9f-e39322d7b63b",
+      "name": "Monisha Jegadeesan",
+      "email": "Bmonishaj.65@gmail.com",
+      "phone": "+91 9035212894",
+      "experience": "",
+      "skills": [
+        "javascript",
+        "python",
+        "java",
+        "aws",
+        "html",
+        "css",
+        "django",
+        "c++",
+        "c#",
+        "android"
+      ],
+      "resumeUrl": "/files/cv-inbox/1784894637468-cv.pdf",
+      "resumeName": "cv.pdf",
+      "status": "New",
+      "recruiter": "",
+      "uploadedAt": "2026-07-24"
+    }
+  ],
   "jobs": [
     {
       "id": "j1",

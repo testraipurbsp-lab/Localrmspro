@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard.jsx';
 import Clients from './pages/Clients.jsx';
 import Jobs from './pages/Jobs.jsx';
 import Candidates from './pages/Candidates.jsx';
+import CVInbox from './pages/CVInbox.jsx';
 import CandidateDetail from './pages/CandidateDetail.jsx';
 import Pipeline from './pages/Pipeline.jsx';
 import Calls from './pages/Calls.jsx';
@@ -22,6 +23,7 @@ const links = [
     { to: '/clients', label: 'Clients', icon: '\u2302' },
     { to: '/jobs', label: 'Jobs', icon: '\u2318' },
     { to: '/candidates', label: 'Candidates', icon: '\u25CF' },
+    { to: '/cv-inbox', label: 'CV Inbox', icon: '\u2709' },
     { to: '/pipeline', label: 'Pipeline', icon: '\u21C9' },
     { to: '/calls', label: 'Calls', icon: '\u260E' },
     { to: '/interviews', label: 'Interviews', icon: '\u25A4' },
@@ -75,6 +77,7 @@ export default function App() {
             <Route path="/clients" element={<Clients />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/candidates" element={<Candidates />} />
+            <Route path="/cv-inbox" element={<CVInbox />} />
             <Route path="/candidates/:id" element={<CandidateDetail />} />
             <Route path="/pipeline" element={<Pipeline />} />
             <Route path="/calls" element={<Calls />} />

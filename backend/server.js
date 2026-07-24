@@ -19,6 +19,9 @@ const DOCS_DIR = path.join(__dirname, 'uploads', 'documents');
 if (!fs.existsSync(DOCS_DIR)) fs.mkdirSync(DOCS_DIR, { recursive: true });
 app.use('/files', express.static(DOCS_DIR));
 
+const CV_DIR = path.join(DOCS_DIR, 'cv-inbox');
+if (!fs.existsSync(CV_DIR)) fs.mkdirSync(CV_DIR, { recursive: true });
+
 function readDB() { return JSON.parse(fs.readFileSync(DB_PATH, 'utf-8')); }
 function writeDB(data) { fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2)); }
 
@@ -40,6 +43,15 @@ const docStorage = multer.diskStorage({
   },
 });
 const uploadDoc = multer({ storage: docStorage });
+
+const cvStorage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, CV_DIR),
+  filename: (req, file, cb) => {
+    const safe = file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+    cb(null, Date.now() + '-' + safe);
+  },
+});
+const uploadCV = multer({ storage: cvStorage });
 
 function addDocument(collectionName, id, file, res) {
   const db = readDB();
@@ -266,27 +278,97 @@ app.get('/api/reports', (req, res) => {
 });
 
 // ---------- Resume upload & parse ----------
+async function extractResumeText(filePath, originalName) {
+  const ext = path.extname(originalName).toLowerCase();
+  if (ext === '.pdf') {
+    const buf = fs.readFileSync(filePath);
+    const data = await pdfParse(buf);
+    return data.text;
+  } else if (ext === '.docx') {
+    const result = await mammoth.extractRawText({ path: filePath });
+    return result.value;
+  }
+  return fs.readFileSync(filePath, 'utf-8');
+}
+
 app.post('/api/candidates/parse-resume', upload.single('resume'), async (req, res) => {
   try {
-    const filePath = req.file.path;
-    const ext = path.extname(req.file.originalname).toLowerCase();
-    let text = '';
-    if (ext === '.pdf') {
-      const buf = fs.readFileSync(filePath);
-      const data = await pdfParse(buf);
-      text = data.text;
-    } else if (ext === '.docx') {
-      const result = await mammoth.extractRawText({ path: filePath });
-      text = result.value;
-    } else {
-      text = fs.readFileSync(filePath, 'utf-8');
-    }
-    fs.unlinkSync(filePath);
+    const text = await extractResumeText(req.file.path, req.file.originalname);
+    fs.unlinkSync(req.file.path);
     res.json(parseResumeText(text));
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to parse resume' });
   }
+});
+
+// ---------- CV Inbox ----------
+app.get('/api/cv-inbox', (req, res) => res.json(readDB().cvInbox || []));
+
+app.post('/api/cv-inbox/upload', uploadCV.single('resume'), async (req, res) => {
+  try {
+    const text = await extractResumeText(req.file.path, req.file.originalname);
+    const parsed = parseResumeText(text);
+    const db = readDB();
+    if (!db.cvInbox) db.cvInbox = [];
+    const entry = {
+      id: uuidv4(),
+      ...parsed,
+      resumeUrl: '/files/cv-inbox/' + req.file.filename,
+      resumeName: req.file.originalname,
+      status: 'New',
+      recruiter: '',
+      uploadedAt: new Date().toISOString().slice(0, 10),
+    };
+    db.cvInbox.push(entry);
+    writeDB(db);
+    res.json(entry);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to process resume' });
+  }
+});
+
+app.put('/api/cv-inbox/:id', (req, res) => {
+  const db = readDB();
+  const idx = (db.cvInbox || []).findIndex(c => c.id === req.params.id);
+  if (idx === -1) return res.status(404).end();
+  db.cvInbox[idx] = { ...db.cvInbox[idx], ...req.body };
+  writeDB(db);
+  res.json(db.cvInbox[idx]);
+});
+
+app.delete('/api/cv-inbox/:id', (req, res) => {
+  const db = readDB();
+  const entry = (db.cvInbox || []).find(c => c.id === req.params.id);
+  if (entry && entry.resumeUrl) {
+    const filePath = path.join(DOCS_DIR, entry.resumeUrl.replace('/files/', ''));
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  }
+  db.cvInbox = (db.cvInbox || []).filter(c => c.id !== req.params.id);
+  writeDB(db);
+  res.json({ ok: true });
+});
+
+app.post('/api/cv-inbox/:id/convert', (req, res) => {
+  const db = readDB();
+  const entry = (db.cvInbox || []).find(c => c.id === req.params.id);
+  if (!entry) return res.status(404).end();
+  const candidate = {
+    id: uuidv4(),
+    name: entry.name || '',
+    email: entry.email || '',
+    phone: entry.phone || '',
+    experience: entry.experience || '',
+    skills: entry.skills || [],
+    stage: 'Sourced',
+    source: 'CV Inbox',
+    ...req.body,
+  };
+  db.candidates.push(candidate);
+  entry.status = 'Converted';
+  writeDB(db);
+  res.json(candidate);
 });
 
 function parseResumeText(text) {
