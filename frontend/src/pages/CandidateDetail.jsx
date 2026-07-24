@@ -73,6 +73,18 @@ export default function CandidateDetail() {
             <div className="label" style={{ color: '#8a8a9a', fontSize: 12 }}>Salary band</div>
             <div>₹{salaryLow}L – ₹{salaryHigh}L per annum</div>
           </div>
+          <div>
+            <div className="label" style={{ color: '#8a8a9a', fontSize: 12 }}>Industry</div>
+            <div>{c.industry || '-'}</div>
+          </div>
+          <div>
+            <div className="label" style={{ color: '#8a8a9a', fontSize: 12 }}>Education</div>
+            <div>{c.education || '-'}</div>
+          </div>
+          <div>
+            <div className="label" style={{ color: '#8a8a9a', fontSize: 12 }}>Notice period</div>
+            <div>{c.noticePeriod || '-'}</div>
+          </div>
           <div style={{ gridColumn: '1 / -1' }}>
             <div className="label" style={{ color: '#8a8a9a', fontSize: 12 }}>Skills</div>
             <div>{(c.skills || []).map(s => <span className="skill-tag" key={s}>{s}</span>)}</div>

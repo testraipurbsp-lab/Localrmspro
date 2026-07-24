@@ -77,6 +77,18 @@
       "location": "Bengaluru",
       "openings": 1,
       "status": "closed"
+    },
+    {
+      "industryType": "IT / Software",
+      "minExperience": 3,
+      "maxExperience": 6,
+      "minSalary": 18,
+      "maxSalary": 25,
+      "requiredSkills": [
+        "React",
+        "Node.js",
+        "AWS"
+      ]
     }
   ],
   "candidates": [
@@ -97,6 +109,11 @@
       ],
       "currentCTC": 16,
       "expectedCTC": 22
+    },
+    {
+      "industry": "IT / Software",
+      "education": "B.Tech Computer Science",
+      "noticePeriod": "30 days"
     },
     {
       "id": "cd2",
