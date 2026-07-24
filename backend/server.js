@@ -15,10 +15,53 @@ const DB_PATH = path.join(__dirname, 'data', 'db.json');
 const UPLOAD_DIR = path.join(__dirname, 'uploads');
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR);
 
+const DOCS_DIR = path.join(__dirname, 'uploads', 'documents');
+if (!fs.existsSync(DOCS_DIR)) fs.mkdirSync(DOCS_DIR, { recursive: true });
+app.use('/files', express.static(DOCS_DIR));
+
 function readDB() { return JSON.parse(fs.readFileSync(DB_PATH, 'utf-8')); }
 function writeDB(data) { fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2)); }
 
 const upload = multer({ dest: UPLOAD_DIR });
+
+const docStorage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, DOCS_DIR),
+  filename: (req, file, cb) => {
+    const safe = file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+    cb(null, Date.now() + '-' + safe);
+  },
+});
+const uploadDoc = multer({ storage: docStorage });
+
+function addDocument(collectionName, id, file, res) {
+  const db = readDB();
+  const item = db[collectionName].find(x => x.id === id);
+  if (!item) return res.status(404).end();
+  if (!item.documents) item.documents = [];
+  const doc = {
+    id: uuidv4(),
+    name: file.originalname,
+    url: '/files/' + file.filename,
+    uploadedAt: new Date().toISOString().slice(0, 10),
+  };
+  item.documents.push(doc);
+  writeDB(db);
+  res.json(doc);
+}
+
+function deleteDocument(collectionName, id, docId, res) {
+  const db = readDB();
+  const item = db[collectionName].find(x => x.id === id);
+  if (!item) return res.status(404).end();
+  const doc = (item.documents || []).find(d => d.id === docId);
+  if (doc) {
+    const filePath = path.join(DOCS_DIR, path.basename(doc.url));
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  }
+  item.documents = (item.documents || []).filter(d => d.id !== docId);
+  writeDB(db);
+  res.json({ ok: true });
+}
 
 // ---------- Dashboard ----------
 app.get('/api/dashboard', (req, res) => {
@@ -61,6 +104,13 @@ app.delete('/api/clients/:id', (req, res) => {
   res.json({ ok: true });
 });
 
+
+app.post('/api/clients/:id/documents', uploadDoc.single('file'), (req, res) => {
+  addDocument('clients', req.params.id, req.file, res);
+});
+app.delete('/api/clients/:id/documents/:docId', (req, res) => {
+  deleteDocument('clients', req.params.id, req.params.docId, res);
+});
 // ---------- Candidates ----------
 app.get('/api/candidates', (req, res) => res.json(readDB().candidates));
 app.post('/api/candidates', (req, res) => {
@@ -111,6 +161,12 @@ app.put('/api/jobs/:id', (req, res) => {
   res.json(db.jobs[idx]);
 });
 
+app.post('/api/jobs/:id/documents', uploadDoc.single('file'), (req, res) => {
+  addDocument('jobs', req.params.id, req.file, res);
+});
+app.delete('/api/jobs/:id/documents/:docId', (req, res) => {
+  deleteDocument('jobs', req.params.id, req.params.docId, res);
+});
 // ---------- Interviews ----------
 app.get('/api/interviews', (req, res) => res.json(readDB().interviews));
 app.post('/api/interviews', (req, res) => {

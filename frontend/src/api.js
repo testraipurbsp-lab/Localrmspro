@@ -14,3 +14,7 @@ export const api = {
   put: (path, body) => req(path, { method: 'PUT', body: JSON.stringify(body) }),
   del: (path) => req(path, { method: 'DELETE' }),
 };
+
+// Files (like uploaded documents) are served from the backend origin, not the frontend's.
+const ORIGIN = BASE.replace(/\/api$/, '');
+export const fileUrl = (relativePath) => ORIGIN + relativePath;

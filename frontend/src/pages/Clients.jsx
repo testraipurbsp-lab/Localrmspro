@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api.js';
+import DocumentManager from '../components/DocumentManager.jsx';
 
 const empty = { name: '', industry: '', contact: '', email: '', openJobs: 0 };
 
@@ -7,6 +8,7 @@ export default function Clients() {
   const [clients, setClients] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState(empty);
+  const [docsClient, setDocsClient] = useState(null);
 
   const load = () => api.get('/clients').then(setClients);
   useEffect(() => { load(); }, []);
@@ -16,6 +18,10 @@ export default function Clients() {
     setForm(empty);
     setShowModal(false);
     load();
+  };
+
+  const updateClientDocs = (clientId, newDocs) => {
+    setClients(cs => cs.map(c => c.id === clientId ? { ...c, documents: newDocs } : c));
   };
 
   return (
@@ -29,7 +35,7 @@ export default function Clients() {
       </div>
       <div className="panel">
         <table>
-          <thead><tr><th>CLIENT</th><th>CONTACT</th><th>OPEN JOBS</th><th>STATUS</th></tr></thead>
+          <thead><tr><th>CLIENT</th><th>CONTACT</th><th>OPEN JOBS</th><th>STATUS</th><th>DOCUMENTS</th></tr></thead>
           <tbody>
             {clients.map(c => (
               <tr key={c.id}>
@@ -37,6 +43,11 @@ export default function Clients() {
                 <td>{c.contact}<br /><span style={{ color: '#999' }}>{c.email}</span></td>
                 <td>{c.openJobs}</td>
                 <td><span className={'badge ' + (c.status === 'active' ? 'green' : 'gray')}>{c.status}</span></td>
+                <td>
+                  <button className="btn secondary" style={{ padding: '5px 12px', fontSize: 12.5 }} onClick={() => setDocsClient(c)}>
+                    {(c.documents || []).length} file{(c.documents || []).length === 1 ? '' : 's'}
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -59,6 +70,17 @@ export default function Clients() {
             </div>
           </div>
         </div>
+      )}
+
+      {docsClient && (
+        <DocumentManager
+          entityType="clients"
+          entityId={docsClient.id}
+          documents={docsClient.documents || []}
+          title={`Documents — ${docsClient.name}`}
+          onChange={(newDocs) => updateClientDocs(docsClient.id, newDocs)}
+          onClose={() => setDocsClient(null)}
+        />
       )}
     </div>
   );
